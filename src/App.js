@@ -1,10 +1,15 @@
-import React from 'react';
+import React from 'react'
+import Navbar from './components/Navbar'
+import Grid from './components/Grid'
+
 
 function App() {
   return (
-    <div className="App">
-    </div>
+    <>
+      <Navbar />
+      <Grid />
+    </>
   );
 }
 
-export default App;
+export default App
