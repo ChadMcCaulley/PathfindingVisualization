@@ -1,5 +1,11 @@
 import React, { Component } from 'react'
 import Node from './Node'
+import {dijkstra, getShortestPathNodes} from '../algorithms/dijkstra'
+
+const START_COL = 3
+const START_ROW = 4
+const END_COL = 15
+const END_ROW = 15
 
 export default class Grid extends Component {
   constructor(props) {
@@ -11,7 +17,7 @@ export default class Grid extends Component {
   }
 
   componentDidMount() {
-    const grid = initializeGrid(20, 20)
+    const grid = initializeGrid(25, 20)
     this.setState({grid})
   }
 
@@ -30,35 +36,82 @@ export default class Grid extends Component {
     this.setState({mouseIsPressed: false})
   }
 
+  visualizeDijkstra () {
+    const {grid} = this.state
+    const startNode = grid[START_ROW][START_COL]
+    const endNode = grid[END_ROW][END_COL]
+    const orderedVisistedNodes = dijkstra(grid, startNode, endNode)
+    const shortestPathNodes = getShortestPathNodes(endNode)
+    this.animateDijkstra(orderedVisistedNodes, shortestPathNodes)
+  }
+
+  /**
+   * Change the class assigned to the nodes visted to allow for the visualization of the dijkstra algorithm
+   * @param {Array} orderedVisistedNodes
+   * @param {Array} shortestPathNodes
+   */
+  animateDijkstra(orderedVisistedNodes, shortestPathNodes) {
+    for (let i = 0; i <= orderedVisistedNodes.length; i++) {
+      if (i === orderedVisistedNodes.length) {
+        setTimeout(() => {
+          this.animateShortestPath(shortestPathNodes)
+        }, 10 * i)
+        return
+      }
+      setTimeout(() => {
+        const node = orderedVisistedNodes[i]
+        document.getElementById(`node-${node.row}-${node.col}`).className = 'node visited-node'
+      }, 10 * i)
+    }
+  }
+
+  /**
+   * Change the class of the nodes that make up the optimal or shortest path
+   * @param {Array} shortestPathNodes 
+   */
+  animateShortestPath(shortestPathNodes) {
+    for (let i = 0; i < shortestPathNodes.length; i++) {
+      setTimeout(() => {
+        const node = shortestPathNodes[i]
+        document.getElementById(`node-${node.row}-${node.col}`).className = 'node shortest-path-node'
+      }, 50 * i)
+    }
+  }
+
 
   render() {
     const {grid} = this.state
 
     return (
-      <div className="grid">
-        {grid.map((row, rowId) => {
-          return (
-            <div key={rowId}>
-              {row.map((node, nodeId) => {
-                const {row, col, targetNum, isStart, isWall} = node;
-                return (
-                  <Node
-                    key={nodeId}
-                    col={col}
-                    row={row}
-                    targetNum={targetNum}
-                    isStart={isStart}
-                    isWall={isWall}
-                    onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                    onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
-                    onMouseUp={() => this.handleMouseUp()}
-                  />
-                )
-              })}
-            </div>
-          )
-        })}
-      </div>
+      <>
+        <button style={{marginTop: 80}} onClick={() => this.visualizeDijkstra()}>
+          Start Dijkstra
+        </button>
+        <div className="grid">
+          {grid.map((row, rowId) => {
+            return (
+              <div key={rowId}>
+                {row.map((node, nodeId) => {
+                  const {row, col, targetNum, isStart, isWall} = node;
+                  return (
+                    <Node
+                      key={nodeId}
+                      col={col}
+                      row={row}
+                      targetNum={targetNum}
+                      isStart={isStart}
+                      isWall={isWall}
+                      onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                      onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
+                      onMouseUp={() => this.handleMouseUp()}
+                    />
+                  )
+                })}
+              </div>
+            )
+          })}
+        </div>
+      </>
     )
   }
 }
@@ -94,8 +147,8 @@ const createNode = (col, row) => {
   return {
     col,
     row,
-    isStart: false,
-    targetNum: null,
+    isStart: col === START_COL && row === START_ROW,
+    targetNum: col === END_COL && row === END_ROW ? 1 : null,
     distance: Infinity,
     isVisited: false,
     isWall: false,

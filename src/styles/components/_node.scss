@@ -9,3 +9,19 @@
 .wall-node {
   background-color: $wall;
 }
+
+.start-node {
+  background-color: $start;
+}
+
+.target-node {
+  background-color: $target;
+}
+
+.visited-node {
+  background-color: $primary;
+}
+
+.shortest-path-node {
+  background-color: $optimal;
+}
