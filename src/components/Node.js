@@ -5,6 +5,7 @@ import { getNodeId, getNodeClassName } from '../utils/node'
 
 export default function Node (props) {
   const {
+    size,
     col,
     row,
     targetNum,
@@ -17,6 +18,7 @@ export default function Node (props) {
 
   return (
     <div
+      style={{ width: `${size}px`, height: `${size}px` }}
       id={getNodeId(props)}
       className={getNodeClassName(props)}
       draggable={isStart || targetNum}

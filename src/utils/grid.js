@@ -18,6 +18,30 @@ const initializeGrid = (numRows, numCols) => {
   return grid
 }
 
+/**
+ * Get the number nodes for the grid based on the window height
+ * @param {Integer} windowHeight 
+ * @param {Integer} nodeSize
+ * @return {Integer}
+ */
+const getGridHeight = (windowHeight, nodeSize) => {
+  const numNodes = Math.floor((windowHeight - 100) / nodeSize)
+  return numNodes > 4 ? numNodes : 5 
+}
+
+/**
+ * Get the number nodes for the grid based on the window width
+ * @param {Integer} windowWidth 
+ * @param {Integer} nodeSize
+ * @return {Integer}
+ */
+const getGridWidth = (windowWidth, nodeSize) => {
+  const numNodes = Math.floor((windowWidth - 50) / nodeSize)
+  return numNodes > 4 ? numNodes : 5 
+}
+
 export {
-  initializeGrid
+  initializeGrid,
+  getGridHeight,
+  getGridWidth
 }

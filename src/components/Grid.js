@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Node from './Node'
 import { visualizeDijkstra, visualizeAStar } from '../utils/algo'
 import { toggleWallNodes, getNodeId, getNodeClassName } from '../utils/node'
-import { initializeGrid } from '../utils/grid'
+import { initializeGrid, getGridHeight, getGridWidth } from '../utils/grid'
 
 
 export default class Grid extends Component {
@@ -10,12 +10,32 @@ export default class Grid extends Component {
     super(props)
     this.state = {
       grid: [],
-      mouseIsPressed: false
+      mouseIsPressed: false,
+      nodeSize: 25
     }
+    this.resizeGrid = this.resizeGrid.bind(this)
   }
 
+  /**
+   * Add event listener
+   */
   componentDidMount() {
-    const grid = initializeGrid(25, 20)
+    this.resizeGrid()
+    window.addEventListener("resize", this.resizeGrid)
+  }
+
+  /**
+   * Remove event listener
+   */
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.resizeGrid)
+  }
+
+  resizeGrid () {
+    const { nodeSize } = this.state
+    const gridHeight = getGridHeight(window.innerHeight, nodeSize)
+    const gridWidth = getGridWidth(window.innerWidth, nodeSize)
+    const grid = initializeGrid(gridHeight, gridWidth)
     this.setState({grid})
   }
 
@@ -70,7 +90,7 @@ export default class Grid extends Component {
 
 
   render() {
-    const {grid} = this.state
+    const {grid, nodeSize} = this.state
 
     return (
       <div className="container">
@@ -83,6 +103,7 @@ export default class Grid extends Component {
                   return (
                     <Node
                       key={`${rowId}-${nodeId}`}
+                      size={nodeSize}
                       col={col}
                       row={row}
                       targetNum={targetNum}
