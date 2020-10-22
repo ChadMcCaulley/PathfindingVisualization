@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Node from './Node'
 import {dijkstra, getShortestPathNodes} from '../algorithms/dijkstra'
+import {getNodeId, getNodeClassName} from '../utils/node'
 
 const START_COL = 3
 const START_ROW = 4
@@ -22,8 +23,14 @@ export default class Grid extends Component {
   }
 
   handleMouseDown(row, col) {
-    const newGrid = toggleWallNodes(this.state.grid, row, col);
-    this.setState({grid: newGrid, mouseIsPressed: true})
+    const {grid} = this.state
+    const initialNode = grid[row][col]
+    if (initialNode.isStart) {
+      console.log('START NODE GRABBED')
+    } else {
+      const newGrid = toggleWallNodes(this.state.grid, row, col);
+      this.setState({grid: newGrid, mouseIsPressed: true})
+    }
   }
 
   handleMouseEnter(row, col) {
@@ -36,8 +43,13 @@ export default class Grid extends Component {
     this.setState({mouseIsPressed: false})
   }
 
+  handleDrop() {
+    console.log('Dropped')
+  }
+
   visualizeDijkstra () {
     const {grid} = this.state
+    resetGrid(grid)
     const startNode = grid[START_ROW][START_COL]
     const endNode = grid[END_ROW][END_COL]
     const orderedVisistedNodes = dijkstra(grid, startNode, endNode)
@@ -87,37 +99,37 @@ export default class Grid extends Component {
         <button style={{marginTop: 80}} onClick={() => this.visualizeDijkstra()}>
           Start Dijkstra
         </button>
-        <div className="grid">
-          {grid.map((row, rowId) => {
-            return (
-              <div key={rowId}>
-                {row.map((node, nodeId) => {
-                  const {row, col, targetNum, isStart, isWall} = node;
-                  return (
-                    <Node
-                      key={nodeId}
-                      col={col}
-                      row={row}
-                      targetNum={targetNum}
-                      isStart={isStart}
-                      isWall={isWall}
-                      onMouseDown={(row, col) => this.handleMouseDown(row, col)}
-                      onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
-                      onMouseUp={() => this.handleMouseUp()}
-                    />
-                  )
-                })}
-              </div>
-            )
-          })}
+        <div className="container">
+          <div className="grid">
+            {grid.map((row, rowId) => {
+              return (
+                <div key={rowId}>
+                  {row.map((node, nodeId) => {
+                    const {row, col, targetNum, isStart, isWall} = node;
+                    return (
+                      <Node
+                        key={`${rowId}-${nodeId}`}
+                        col={col}
+                        row={row}
+                        targetNum={targetNum}
+                        isStart={isStart}
+                        isWall={isWall}
+                        onDragEnd={() => this.handleDrop()}
+                        onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                        onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
+                        onMouseUp={() => this.handleMouseUp()}
+                      />
+                    )
+                  })}
+                </div>
+              )
+            })}
+          </div>
         </div>
       </>
     )
   }
 }
-
-
-
 
 /**
  * Create the initial grid of nodes based on the given number or rows and columns
@@ -135,6 +147,21 @@ const initializeGrid = (numRows, numCols) => {
     grid.push(currentRow);
   }
   return grid
+}
+
+/**
+ * Create the initial grid of nodes based on the given number or rows and columns
+ * @param {2DArray} grid
+ * @return {Array[Array]}
+ */
+const resetGrid = (grid) => {
+  grid.forEach(row => {
+    row.forEach(node => {
+      node.distance = Infinity
+      node.isVisited = false
+      document.getElementById(getNodeId(node)).className = getNodeClassName(node)
+    })
+  })
 }
 
 /**

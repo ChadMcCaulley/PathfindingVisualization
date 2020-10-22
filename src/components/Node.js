@@ -1,31 +1,26 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
+import { getNodeId, getNodeClassName } from '../utils/node'
 
-export default function Node(props) {
+export default function Node (props) {
   const {
     col,
     row,
     targetNum,
     isStart,
-    isWall,
     onMouseDown,
     onMouseEnter,
-    onMouseUp
+    onMouseUp,
+    onDragEnd
   } = props
-
-  const extraClassName = targetNum !== null
-  ? 'target-node'
-  : isStart
-  ? 'start-node'
-  : isWall
-  ? 'wall-node'
-  : '';
 
   return (
     <div
-      id={`node-${row}-${col}`}
-      className={`node ${extraClassName}`}
+      id={getNodeId(props)}
+      className={getNodeClassName(props)}
+      draggable={isStart || targetNum}
+      onDragEnd={() => onDragEnd()}
       onMouseDown={() => onMouseDown(row, col) }
       onMouseEnter={() => onMouseEnter(row, col) }
       onMouseUp={() => onMouseUp() }
