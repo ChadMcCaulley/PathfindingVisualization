@@ -3,7 +3,7 @@
   width: 25px;
   height: 25px;
   vertical-align: bottom;
-  outline: 1px solid $grey;
+  outline: 1px solid $primary;
 }
 
 .wall-node {
@@ -19,9 +19,62 @@
 }
 
 .visited-node {
-  background-color: $primary;
+  animation-name: visitedAnimation;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+@keyframes visitedAnimation {
+  0% {
+    transform: scale(0.3);
+    background-color: $looking;
+    border-radius: 100%;
+  }
+
+  50% {
+    background-color: $assessing;
+  }
+
+  75% {
+    transform: scale(1.2);
+    background-color: $assessed;
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: $seen;
+  }
 }
 
 .shortest-path-node {
-  background-color: $optimal;
+  animation-name: shortestPath;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
+
+@keyframes shortestPath {
+  0% {
+    transform: scale(0.6);
+    background-color: $optimal;
+  }
+
+  50% {
+    transform: scale(1.2);
+    background-color: $optimal;
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: $optimal;
+  }
 }
