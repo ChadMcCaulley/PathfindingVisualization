@@ -1,0 +1,68 @@
+.btn {
+  border-radius: 0.5rem;
+  border: 0.1rem solid $primary;
+  font-size: 1rem;
+  outline: none;
+  transition-duration: 0.4s;
+  background-color: rgba($color: $black, $alpha: 0);
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-grow: 1;
+  @media (max-width: $mobile) {
+    display: block;
+  }
+}
+
+.btn-option {
+  @media (max-width: $tablet) {
+    margin-bottom: 0.25em;
+  }
+  color: $black;
+  padding: 0.4em;
+  &:hover,
+  &:active,
+  &:focus {
+    color: $white;
+    background-color: $primary;
+    box-shadow: 0 0.2rem 0.3rem 0 rgba(0, 0, 0, 0.2),
+      0 0.2rem 0.5rem 0 rgba(0, 0, 0, 0.15);
+  }
+  &:disabled {
+    opacity: 0.4;
+    border-color: $grey;
+    &:hover,
+    &:active,
+    &:focus {
+      color: $black;
+      cursor: default;
+      background-color: rgba($color: $black, $alpha: 0);
+      box-shadow: none;
+    }
+  }
+}
+
+.btn-text {
+  color: $primary;
+  flex-shrink: 1;
+  border-color: rgba($color: $black, $alpha: 0);
+  margin-left: 1em;
+  &:disabled {
+    opacity: 0.8;
+    color: $black;
+    cursor: default;
+  }
+  &:active {
+    background-color: $primary;
+    color: $white;
+  }
+  @media (max-width: $mobile) {
+    margin-left: 0;
+  }
+}

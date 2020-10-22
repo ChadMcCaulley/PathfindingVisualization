@@ -42,9 +42,79 @@ const getNodeClassName = (node) => {
   return className.join(' ')
 }
 
+/**
+ * Get the start node from the grid
+ * @param {2DArray} grid
+ * @return {Node}
+ */
+const getStartNode = (grid) => {
+  for (const row of grid) {
+    for (const node of row) {
+      if (node.isStart) return node
+    }
+  }
+  return null
+}
+
+/**
+ * Get the end node from the grid
+ * @param {2DArray} grid
+ * @return {Node}
+ */
+const getTargetNode = (grid) => {
+  for (const row of grid) {
+    for (const node of row) {
+      if (node.targetNum !== null) return node
+    }
+  }
+  return null
+}
+
+/**
+ * Toggle whether or not a node is a wall
+ * @param {Array[Array]} grid 
+ * @param {Integer} row 
+ * @param {Integer} col
+ * @return {Array[Array]}
+ */
+const toggleWallNodes = (grid, row, col) => {
+  const newGrid = grid.slice()
+  const node = newGrid[row][col]
+  const newNode = { ...node, isWall: !node.isWall }
+  newGrid[row][col] = newNode
+  return newGrid
+}
+
+/**
+ * Generate initial node prop values based on the row and column of the node
+ * @param {Integer} col 
+ * @param {Integer} row
+ * @return {Object}
+ */
+const createNode = (col, row) => {
+  const START_COL = 3
+  const START_ROW = 4
+  const END_COL = 15
+  const END_ROW = 15
+  return {
+    col,
+    row,
+    isStart: col === START_COL && row === START_ROW,
+    targetNum: col === END_COL && row === END_ROW ? 1 : null,
+    distance: Infinity,
+    isVisited: false,
+    isWall: false,
+    previousNode: null
+  }
+}
+
 export {
   getAllNodes,
   sortNodesByDistance,
   getNodeId,
-  getNodeClassName
+  getNodeClassName,
+  toggleWallNodes,
+  createNode,
+  getStartNode,
+  getTargetNode
 }
