@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Node from './Node'
-import { visualizeDijkstra } from '../utils/algo'
+import { visualizeDijkstra, visualizeAStar } from '../utils/algo'
 import { toggleWallNodes, getNodeId, getNodeClassName } from '../utils/node'
 import { initializeGrid } from '../utils/grid'
 
@@ -48,6 +48,7 @@ export default class Grid extends Component {
     const {grid} = this.state
     this.resetGrid()
     if (algoName.toLowerCase() === 'dijkstra') visualizeDijkstra(grid)
+    if (algoName.toLowerCase() === 'astar') visualizeAStar(grid)
   }
 
   /**

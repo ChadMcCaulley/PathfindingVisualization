@@ -1,11 +1,11 @@
 import {dijkstra, getShortestPathNodes} from '../algorithms/dijkstra'
+import {astar} from '../algorithms/astar'
 import { getTargetNode, getStartNode } from '../utils/node'
 
 
 /**
- * Change the class assigned to the nodes visted to allow for the visualization of the dijkstra algorithm
- * @param {Array} orderedVisistedNodes
- * @param {Array} shortestPathNodes
+ * Visualize the dijkstra algorithm
+ * @param {2DArray} grid
  */
 const visualizeDijkstra = (grid) => {
   const startNode = getStartNode(grid)
@@ -36,6 +36,17 @@ const animateDijkstra = (orderedVisistedNodes, shortestPathNodes) => {
 }
 
 /**
+ * Visualize the dijkstra algorithm
+ * @param {2DArray} grid
+ */
+const visualizeAStar = (grid) => {
+  const startNode = getStartNode(grid)
+  const endNode = getTargetNode(grid)
+  const orderedVisistedNodes = astar(grid, startNode, endNode)
+  console.log(orderedVisistedNodes)
+}
+
+/**
  * Change the class of the nodes that make up the optimal or shortest path
  * @param {Array} shortestPathNodes 
  */
@@ -51,5 +62,6 @@ const animateShortestPath = (shortestPathNodes) => {
 export {
   animateDijkstra,
   animateShortestPath,
+  visualizeAStar,
   visualizeDijkstra
 }

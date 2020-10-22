@@ -14,6 +14,7 @@ export default class App extends Component {
       <>
         <Navbar
           onVisualizeDijkstra={() => this.gridRef.current.visualizeAlgo('dijkstra')}
+          onVisualizeAStar={() => this.gridRef.current.visualizeAlgo('astar')}
           onResetGrid={() => { this.gridRef.current.resetGrid(true)}}
         />
         <Grid ref={this.gridRef}/>
