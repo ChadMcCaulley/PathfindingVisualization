@@ -57,8 +57,12 @@ class Grid extends Component {
     this.setState({mouseIsPressed: false})
   }
 
-  handleDrop() {
-    console.log('Dropped')
+  handleDrop(e) {
+    const updatedNodeId = e.target.id
+    const data = e.dataTransfer.getData('text')
+    const previousNodeId = data.split(' ')[0]
+    const type = data.split(' ')[1]
+    
   }
 
   visualizeAlgo (algoName) {
@@ -106,7 +110,7 @@ class Grid extends Component {
                       targetNum={targetNum}
                       isStart={isStart}
                       isWall={isWall}
-                      onDragEnd={() => this.handleDrop()}
+                      onDrop={(e) => this.handleDrop(e)}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                       onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
                       onMouseUp={() => this.handleMouseUp()}
