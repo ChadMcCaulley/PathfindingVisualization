@@ -26,11 +26,11 @@ export default class Grid extends Component {
   }
 
   resizeGrid () {
-    const { nodeSize } = this.state
+    const { nodeSize, grid } = this.state
     const gridHeight = getGridHeight(window.innerHeight, nodeSize)
     const gridWidth = getGridWidth(window.innerWidth, nodeSize)
-    const grid = initializeGrid(gridHeight, gridWidth)
-    this.setState({grid})
+    const newGrid = initializeGrid(gridHeight, gridWidth, grid)
+    this.setState({ grid: newGrid })
   }
 
   handleMouseDown(row, col) {

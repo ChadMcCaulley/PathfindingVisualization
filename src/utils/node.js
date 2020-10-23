@@ -104,19 +104,17 @@ const toggleWallNodes = (grid, row, col) => {
  * Generate initial node prop values based on the row and column of the node
  * @param {Integer} col 
  * @param {Integer} row
+ * @param {Boolean} isStart
+ * @param {Integer} targetNum 
  * @return {Object}
  */
-const createNode = (col, row) => {
-  const START_COL = 3
-  const START_ROW = 4
-  const END_COL = 15
-  const END_ROW = 15
+const createNode = (col, row, isStart = false, targetNum = null) => {
   return {
     id: getNodeId({ col, row }),
     col,
     row,
-    isStart: col === START_COL && row === START_ROW,
-    targetNum: col === END_COL && row === END_ROW ? 1 : null,
+    isStart,
+    targetNum,
     distance: Infinity,
     isVisited: false,
     isWall: false,
