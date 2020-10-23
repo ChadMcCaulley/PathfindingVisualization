@@ -17,17 +17,11 @@ class Grid extends Component {
     this.resizeGrid = this.resizeGrid.bind(this)
   }
 
-  /**
-   * Add event listener
-   */
   componentDidMount() {
     this.resizeGrid()
     window.addEventListener("resize", this.resizeGrid)
   }
 
-  /**
-   * Remove event listener
-   */
   componentWillUnmount() {
     window.removeEventListener("resize", this.resizeGrid)
   }

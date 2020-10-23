@@ -1,9 +1,14 @@
 
-import React from 'react'
+import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
 import { getNodeId, getNodeClassName } from '../utils/node'
 
 export default function Node (props) {
+  useEffect(() => {
+    return () => {
+    }
+  })
+  
   const {
     size,
     col,
