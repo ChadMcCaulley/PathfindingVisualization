@@ -71,6 +71,21 @@ const getTargetNode = (grid) => {
 }
 
 /**
+ * Get the end node from the grid
+ * @param {2DArray} grid
+ * @param {String} id
+ * @return {Node}
+ */
+const getNodeById = (grid, id) => {
+  for (const row of grid) {
+    for (const node of row) {
+      if (node.id === id) return node
+    }
+  }
+  return null
+}
+
+/**
  * Toggle whether or not a node is a wall
  * @param {Array[Array]} grid 
  * @param {Integer} row 
@@ -97,6 +112,7 @@ const createNode = (col, row) => {
   const END_COL = 15
   const END_ROW = 15
   return {
+    id: getNodeId({ col, row }),
     col,
     row,
     isStart: col === START_COL && row === START_ROW,
@@ -116,5 +132,6 @@ export {
   toggleWallNodes,
   createNode,
   getStartNode,
-  getTargetNode
+  getTargetNode,
+  getNodeById
 }

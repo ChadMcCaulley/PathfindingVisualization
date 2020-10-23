@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Node from './Node'
 import { visualizeDijkstra, visualizeAStar } from '../utils/algo'
-import { toggleWallNodes, getNodeId, getNodeClassName } from '../utils/node'
+import { toggleWallNodes, getNodeId, getNodeClassName, getNodeById } from '../utils/node'
 import { initializeGrid, getGridHeight, getGridWidth } from '../utils/grid'
 
 
@@ -16,17 +16,11 @@ export default class Grid extends Component {
     this.resizeGrid = this.resizeGrid.bind(this)
   }
 
-  /**
-   * Add event listener
-   */
   componentDidMount() {
     this.resizeGrid()
     window.addEventListener("resize", this.resizeGrid)
   }
 
-  /**
-   * Remove event listener
-   */
   componentWillUnmount() {
     window.removeEventListener("resize", this.resizeGrid)
   }
@@ -42,12 +36,9 @@ export default class Grid extends Component {
   handleMouseDown(row, col) {
     const {grid} = this.state
     const initialNode = grid[row][col]
-    if (initialNode.isStart) {
-      console.log('START NODE GRABBED')
-    } else {
-      const newGrid = toggleWallNodes(this.state.grid, row, col);
-      this.setState({grid: newGrid, mouseIsPressed: true})
-    }
+    if (initialNode.isStart || initialNode.targetNum !== null) return
+    const newGrid = toggleWallNodes(this.state.grid, row, col);
+    this.setState({grid: newGrid, mouseIsPressed: true})
   }
 
   handleMouseEnter(row, col) {
@@ -60,8 +51,30 @@ export default class Grid extends Component {
     this.setState({mouseIsPressed: false})
   }
 
-  handleDrop() {
-    console.log('Dropped')
+  handleDrop(e) {
+    const { grid } = this.state
+    const data = e.dataTransfer.getData('text')
+    const type = data.split(' ')[1]
+    const prevNodeId = data.split(' ')[0]
+    const updatedNodeId = e.target.id
+    const previousNode = getNodeById(grid, prevNodeId)
+    const updatedNode = getNodeById(grid, updatedNodeId)
+    updatedNode.isWall = false
+    if (type.toLowerCase() === 'start') {
+      previousNode.isStart = false
+      updatedNode.isStart = true
+    } else {
+      updatedNode.targetNum = previousNode.targetNum
+      previousNode.targetNum = null
+    }
+    const newGrid = grid.map(row => {
+      return row.map(node => {
+        if (node.id === updatedNodeId) return updatedNode
+        else if (node.id === prevNodeId) return previousNode
+        return node
+      })
+    })
+    this.setState({...this.state, grid: newGrid })
   }
 
   visualizeAlgo (algoName) {
@@ -99,9 +112,10 @@ export default class Grid extends Component {
             return (
               <div key={rowId}>
                 {row.map((node, nodeId) => {
-                  const {row, col, targetNum, isStart, isWall} = node;
+                  const {row, col, targetNum, isStart, isWall, id} = node;
                   return (
                     <Node
+                      id={id}
                       key={`${rowId}-${nodeId}`}
                       size={nodeSize}
                       col={col}
@@ -109,7 +123,7 @@ export default class Grid extends Component {
                       targetNum={targetNum}
                       isStart={isStart}
                       isWall={isWall}
-                      onDragEnd={() => this.handleDrop()}
+                      onDrop={(e) => this.handleDrop(e)}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                       onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
                       onMouseUp={() => this.handleMouseUp()}
