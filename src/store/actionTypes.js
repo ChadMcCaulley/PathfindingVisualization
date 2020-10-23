@@ -1,0 +1,2 @@
+export const SET_START_NODE = "SET_START_NODE"
+export const SET_TARGET_NODE = "SET_TARGET_NODE"

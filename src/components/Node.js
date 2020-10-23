@@ -21,7 +21,7 @@ export default function Node (props) {
       style={{ width: `${size}px`, height: `${size}px` }}
       id={getNodeId(props)}
       className={getNodeClassName(props)}
-      draggable={isStart || targetNum}
+      draggable={isStart || targetNum !== null}
       onDragEnd={() => onDragEnd()}
       onMouseDown={() => onMouseDown(row, col) }
       onMouseEnter={() => onMouseEnter(row, col) }
@@ -36,4 +36,8 @@ Node.propTypes = {
   targetNum: PropTypes.number,
   isStart: PropTypes.bool.isRequired,
   isWall: PropTypes.bool.isRequired,
+  onMouseDown: PropTypes.func.isRequired,
+  onMouseEnter: PropTypes.func.isRequired,
+  onMouseUp: PropTypes.func.isRequired,
+  onDragEnd: PropTypes.func.isRequired,
 }

@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import Node from './Node'
+import { connect } from 'react-redux'
 import { visualizeDijkstra, visualizeAStar } from '../utils/algo'
 import { toggleWallNodes, getNodeId, getNodeClassName } from '../utils/node'
 import { initializeGrid, getGridHeight, getGridWidth } from '../utils/grid'
 
 
-export default class Grid extends Component {
+class Grid extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -44,6 +45,8 @@ export default class Grid extends Component {
     const initialNode = grid[row][col]
     if (initialNode.isStart) {
       console.log('START NODE GRABBED')
+    } else if (initialNode.targetNum !== null) {
+      console.log('TARGET NODE GRABBED')
     } else {
       const newGrid = toggleWallNodes(this.state.grid, row, col);
       this.setState({grid: newGrid, mouseIsPressed: true})
@@ -124,3 +127,13 @@ export default class Grid extends Component {
     )
   }
 }
+
+function mapStateToProps(state) {
+  const { startNode, targetNode } = state.node
+  return {
+    startNode,
+    targetNode
+  }
+}
+
+export default connect(mapStateToProps, null, null, {forwardRef: true})(Grid)
