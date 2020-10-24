@@ -1,6 +1,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
+import { FaRecordVinyl, FaStreetView } from 'react-icons/fa'
 import { getNodeId, getNodeClassName } from '../utils/node'
 
 export default function Node (props) {
@@ -16,6 +17,10 @@ export default function Node (props) {
     onDragEnd
   } = props
 
+  let icon = null
+  if (isStart) icon = <FaStreetView className="node-icon"/>
+  else if (targetNum !== null) icon = <FaRecordVinyl className="node-icon"/>
+
   return (
     <div
       style={{ width: `${size}px`, height: `${size}px` }}
@@ -26,7 +31,9 @@ export default function Node (props) {
       onMouseDown={() => onMouseDown(row, col) }
       onMouseEnter={() => onMouseEnter(row, col) }
       onMouseUp={() => onMouseUp() }
-    />
+    >
+      {icon}
+    </div>
   )
 }
 

@@ -1,22 +1,16 @@
 .node {
   display: inline-block;
-  width: 25px;
-  height: 25px;
   vertical-align: bottom;
   outline: 1px solid $primary;
+}
+
+.node-icon {
+  transform: scale(1.5) translate(15%, 15%);
 }
 
 .wall-node {
   outline: none;
   background-color: $wall;
-}
-
-.start-node {
-  background-color: $start;
-}
-
-.target-node {
-  background-color: $target;
 }
 
 .visited-node {
