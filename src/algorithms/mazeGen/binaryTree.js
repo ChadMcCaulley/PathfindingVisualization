@@ -40,7 +40,9 @@ const genBinaryTreeMaze = (grid, bias) => {
  * @return {String}
  */
 const getValidDirection = (dir) => {
-  return (dir !== 'ne' && dir !== 'nw' && dir !== 'sw' && dir !== 'se') ? 'nw' : dir
+  const dirs = ['ne', 'nw', 'sw', 'se']
+  const randomDir = dirs[Math.random() * (dirs.length-1)]
+  return (dir !== 'ne' && dir !== 'nw' && dir !== 'sw' && dir !== 'se') ?  randomDir : dir
 }
 
 /**
