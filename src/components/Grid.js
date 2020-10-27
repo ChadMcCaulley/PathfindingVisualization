@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Node from './Node'
+import { genBinaryTreeMaze } from '../algorithms/mazeGen/binaryTree'
 import { visualizeDijkstra, visualizeAStar } from '../utils/algo'
 import { toggleWallNodes, getNodeId, getNodeClassName, getNodeById } from '../utils/node'
 import { initializeGrid, getGridHeight, getGridWidth } from '../utils/grid'
@@ -77,11 +78,25 @@ export default class Grid extends Component {
     this.setState({...this.state, grid: newGrid })
   }
 
+  /**
+   * Visualize a pathfinding algorithm
+   * @param {String} algoName 
+   */
   visualizeAlgo (algoName) {
     const {grid} = this.state
     this.resetGrid()
     if (algoName.toLowerCase() === 'dijkstra') visualizeDijkstra(grid)
     if (algoName.toLowerCase() === 'astar') visualizeAStar(grid)
+  }
+
+  /**
+   * Generate a maze using one of the maze generators
+   * @param {String} mazeGenName 
+   */
+  generateMaze (mazeGenName) {
+    const {grid} = this.state
+    this.resetGrid()
+    if (mazeGenName.toLowerCase() === 'binary') genBinaryTreeMaze(grid)
   }
 
   /**

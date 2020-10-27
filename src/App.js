@@ -16,7 +16,8 @@ export default class App extends Component {
         <Navbar
           onVisualizeDijkstra={() => gridRef.current.visualizeAlgo('dijkstra')}
           onVisualizeAStar={() => gridRef.current.visualizeAlgo('astar')}
-          onResetGrid={() => { gridRef.current.resetGrid(true)}}
+          onResetGrid={() => gridRef.current.resetGrid(true)}
+          onGenBinaryTreeMaze={() => gridRef.current.generateMaze('binary')}
         />
         <Grid ref={gridRef} />
       </>
