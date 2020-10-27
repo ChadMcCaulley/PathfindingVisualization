@@ -110,16 +110,15 @@ export default class Grid extends Component {
    * @return {Array[Array]}
    */
   resetGrid (resetWalls = false) {
-    const newGrid = this.state.grid.map(row => {
-      return row.map(node => {
+    const {grid} = this.state
+    grid.forEach(row => {
+      row.forEach(node => {
         if (resetWalls) node.isWall = false
         node.distance = Infinity
         node.isVisited = false
         document.getElementById(getNodeId(node)).className = getNodeClassName(node)
-        return node
       })
     })
-    this.setState({ grid: newGrid })
   }
 
 

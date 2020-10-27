@@ -9,6 +9,7 @@ import {getAllNodes, sortNodesByDistance} from '../../utils/node'
  * @param {Node} endNode
  */
 const dijkstra = (grid, startNode, endNode) => {
+  console.log('RUNNING ALGO')
   const orderedVisistedNodes = []
   startNode.distance = 0
   let unvisitedNodes = getAllNodes(grid)
