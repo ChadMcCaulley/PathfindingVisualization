@@ -1,4 +1,4 @@
-import {getAllNodes, sortNodesByDistance} from '../utils/node'
+import {getAllNodes, sortNodesByDistance} from '../../utils/node'
 
 /**
  * The dijsktra algorithm: Returns all visited nodes in the order which they were visted.
@@ -9,6 +9,7 @@ import {getAllNodes, sortNodesByDistance} from '../utils/node'
  * @param {Node} endNode
  */
 const dijkstra = (grid, startNode, endNode) => {
+  console.log('RUNNING ALGO')
   const orderedVisistedNodes = []
   startNode.distance = 0
   let unvisitedNodes = getAllNodes(grid)

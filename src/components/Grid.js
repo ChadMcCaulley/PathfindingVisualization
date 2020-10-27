@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import Node from './Node'
+import { genBinaryTreeMaze } from '../algorithms/mazeGen/binaryTree'
 import { visualizeDijkstra, visualizeAStar } from '../utils/algo'
 import { toggleWallNodes, getNodeId, getNodeClassName, getNodeById } from '../utils/node'
-import { initializeGrid, getGridHeight, getGridWidth } from '../utils/grid'
+import { initializeGrid, getNumRows, getNumCols } from '../utils/grid'
 
 
 export default class Grid extends Component {
@@ -27,8 +28,8 @@ export default class Grid extends Component {
 
   resizeGrid () {
     const { nodeSize, grid } = this.state
-    const gridHeight = getGridHeight(window.innerHeight, nodeSize)
-    const gridWidth = getGridWidth(window.innerWidth, nodeSize)
+    const gridHeight = getNumRows(window.innerHeight, nodeSize)
+    const gridWidth = getNumCols(window.innerWidth, nodeSize)
     const newGrid = initializeGrid(gridHeight, gridWidth, grid)
     this.setState({ grid: newGrid })
   }
@@ -77,11 +78,28 @@ export default class Grid extends Component {
     this.setState({...this.state, grid: newGrid })
   }
 
+  /**
+   * Visualize a pathfinding algorithm
+   * @param {String} algoName 
+   */
   visualizeAlgo (algoName) {
     const {grid} = this.state
     this.resetGrid()
     if (algoName.toLowerCase() === 'dijkstra') visualizeDijkstra(grid)
     if (algoName.toLowerCase() === 'astar') visualizeAStar(grid)
+  }
+
+  /**
+   * Generate a maze using one of the maze generators
+   * @param {String} mazeGenName 
+   */
+  generateMaze (mazeGenName) {
+    this.resetGrid(true)
+    const {grid} = this.state
+    let newGrid = []
+    if (mazeGenName.toLowerCase() === 'binary') newGrid = genBinaryTreeMaze(grid)
+    this.setState({ ...this.state, grid: newGrid })
+    this.resetGrid()
   }
 
   /**

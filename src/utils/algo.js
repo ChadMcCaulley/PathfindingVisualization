@@ -1,5 +1,5 @@
-import {dijkstra, getShortestPathNodes} from '../algorithms/dijkstra'
-import {astar} from '../algorithms/astar'
+import {dijkstra, getShortestPathNodes} from '../algorithms/pathfinding/dijkstra'
+import {astar} from '../algorithms/pathfinding/astar'
 import { getTargetNode, getStartNode } from '../utils/node'
 
 
