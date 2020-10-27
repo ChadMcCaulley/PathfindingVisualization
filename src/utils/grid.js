@@ -40,7 +40,7 @@ const initializeGrid = (numRows, numCols, currentGrid = null) => {
  * @param {Integer} nodeSize
  * @return {Integer}
  */
-const getGridHeight = (windowHeight, nodeSize) => {
+const getNumRows = (windowHeight, nodeSize) => {
   const numNodes = Math.floor((windowHeight - 100) / nodeSize)
   return numNodes > 4 ? numNodes : 5 
 }
@@ -51,13 +51,29 @@ const getGridHeight = (windowHeight, nodeSize) => {
  * @param {Integer} nodeSize
  * @return {Integer}
  */
-const getGridWidth = (windowWidth, nodeSize) => {
+const getNumCols = (windowWidth, nodeSize) => {
   const numNodes = Math.floor((windowWidth - 50) / nodeSize)
   return numNodes > 4 ? numNodes : 5 
 }
 
+/**
+ * Get the height of the grid
+ * @param {2DArray} grid
+ * @return {Integer}
+ */
+const getGridHeight = (grid) => grid.length
+
+/**
+ * Get the width of the grid
+ * @param {2DArray} grid
+ * @return {Integer}
+ */
+const getGridWidth = (grid) => grid[0].length
+
 export {
   initializeGrid,
+  getNumRows,
+  getNumCols,
   getGridHeight,
   getGridWidth
 }

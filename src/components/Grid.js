@@ -3,7 +3,7 @@ import Node from './Node'
 import { genBinaryTreeMaze } from '../algorithms/mazeGen/binaryTree'
 import { visualizeDijkstra, visualizeAStar } from '../utils/algo'
 import { toggleWallNodes, getNodeId, getNodeClassName, getNodeById } from '../utils/node'
-import { initializeGrid, getGridHeight, getGridWidth } from '../utils/grid'
+import { initializeGrid, getNumRows, getNumCols } from '../utils/grid'
 
 
 export default class Grid extends Component {
@@ -28,8 +28,9 @@ export default class Grid extends Component {
 
   resizeGrid () {
     const { nodeSize, grid } = this.state
-    const gridHeight = getGridHeight(window.innerHeight, nodeSize)
-    const gridWidth = getGridWidth(window.innerWidth, nodeSize)
+    this.resetGrid()
+    const gridHeight = getNumRows(window.innerHeight, nodeSize)
+    const gridWidth = getNumCols(window.innerWidth, nodeSize)
     const newGrid = initializeGrid(gridHeight, gridWidth, grid)
     this.setState({ grid: newGrid })
   }
@@ -95,8 +96,12 @@ export default class Grid extends Component {
    */
   generateMaze (mazeGenName) {
     const {grid} = this.state
-    this.resetGrid()
-    if (mazeGenName.toLowerCase() === 'binary') genBinaryTreeMaze(grid)
+    this.resetGrid(true)
+    let newGrid = []
+    if (mazeGenName.toLowerCase() === 'binary') {
+      newGrid = genBinaryTreeMaze(grid)
+    }
+    this.setState({ grid: newGrid })
   }
 
   /**
@@ -105,15 +110,16 @@ export default class Grid extends Component {
    * @return {Array[Array]}
    */
   resetGrid (resetWalls = false) {
-    const {grid} = this.state
-    grid.forEach(row => {
-      row.forEach(node => {
+    const newGrid = this.state.grid.map(row => {
+      return row.map(node => {
         if (resetWalls) node.isWall = false
         node.distance = Infinity
         node.isVisited = false
         document.getElementById(getNodeId(node)).className = getNodeClassName(node)
+        return node
       })
     })
+    this.setState({ grid: newGrid })
   }
 
 

@@ -1,4 +1,38 @@
-const coin_flip = () => Math.round(Math.random())
+import { getGridWidth, getGridHeight } from '../../utils/grid'
+
+/**
+ * Generate the maze using the binary tree algorithm
+ * @param {2DArray} grid 
+ * @param {String} bias 
+ */
+const genBinaryTreeMaze = (grid, bias) => {
+  let height = getGridHeight(grid)
+  let width = getGridWidth(grid)
+  if (height % 2 === 0) --height
+  if (width % 2 === 0) --width
+  const mapHeight = Math.round(height / 2)
+  const mapWidth = Math.round(width / 2)
+  const map = getMap(bias, mapHeight, mapWidth)
+
+  const newGrid = grid.map(row => row.map(col => col))
+  
+  for(let y = 0; y < mapHeight; ++ y) {
+    const gridY = (y * 2)
+
+    for(let x = 0; x < mapWidth; ++x) {
+      const gridX = (x * 2)
+
+      newGrid[gridY][gridX].isWall = true
+
+      if(map[y][x]['n'] === 1) newGrid[(gridY-1)][gridX].isWall = true
+      if(map[y][x]['s'] === 1) newGrid[(gridY+1)][gridX].isWall = true
+      if(map[y][x]['e'] === 1) newGrid[gridY][(gridX+1)].isWall = true
+      if(map[y][x]['w'] === 1) newGrid[gridY][(gridX-1)].isWall = true
+    }
+  }
+  
+  return newGrid
+}
 
 /**
  * If the direction is invalid, assign a default value
@@ -11,95 +45,78 @@ const getValidDirection = (dir) => {
 
 /**
  * Create the map used by the binary tree algorithm
- * @param {2DArray} grid
+ * @param {Integer} height
+ * @param {Integer} width
  * @return {2DArray} map
  */
-const getMap = (grid) => {
-  const width = grid.length
-  const height = grid[0].length
-  return new Array(height).fill([]).map(row => new Array(width).map(col => {
+const initializeMap = (height, width) => {
+  return new Array(height).fill([]).map(row => new Array(width).fill(0).map(col => {
     return {'n':0,'s':0,'e':0,'w':0}
   }))
 }
 
 /**
- * Generate the maze using the binary tree algorithm
- * @param {2DArray} grid 
- * @param {String} bias 
+ * Get the opposite direction given a direction
+ * @param {String} dir
+ * @return {String}
  */
-const genBinaryTreeMaze = (grid, bias) => {
-  const map = getMap(grid)
+const getOppDirection = (dir) => {
+  switch (dir) {
+    case 'n': return 's'
+    case 's': return 'n'
+    case 'e': return 'w'
+    default: return 'e'
+  }
+}
+
+/**
+ * Generate the maze using the binary tree algorithm
+ * @param {Integer} height 
+ * @param {Integer} width 
+ * @param {String} bias
+ * @return {2DArray}
+ */
+const getMap = (bias, height, width) => {
+  const map = initializeMap(height, width)
   const dir = getValidDirection(bias)
 
   const dirs = []
-  dirs.push(dir === 'ne' || dir === 'nw' ? 'n' : 's');
-  dirs.push(dir === 'ne' || dir === 'se' ? 'e' : 'w');
+  dirs.push(dir === 'ne' || dir === 'nw' ? 'n' : 's')
+  dirs.push(dir === 'ne' || dir === 'se' ? 'e' : 'w')
 
-  for(var y = 0; y < this.h; ++y)
-  {
-    var trueY = (dir === 'nw' || dir === 'ne' ? this.h-(y+1) : y);
+  for(let y = 0; y < height; ++y) {
+    const trueY = (dirs[0] === 'n' ? height-(y+1) : y)
 
-    for(var x = 0; x < this.w; ++x)
-    {
-      var trueX = (dir === 'nw' || dir === 'sw' ? this.w-(x+1) : x);
-      var m = 0;
+    for(let x = 0; x < width; ++x) {
+      const trueX = (dirs[1] === 'w' ? width-(x+1) : x)
+      let haveMoved = false
 
-      // If we're at the opposite corners for our movement, break!
-      if(trueY === 0 && dirs[0] === 'n' && ((trueX === 0 && dirs[1] === 'w') || (trueX === (this.w-1) && dirs[1] === 'e'))) { break; }
-      if(trueY === (this.h-1) && dirs[0] === 's' && ((trueX === 0 && dirs[1] === 'w') || (trueX === (this.w-1) && dirs[1] === 'e'))) { break; }
+      const borderY = ((trueY === 0 && dirs[0] === 'n') || (trueY === height-1 && dirs[0] === 's'))
+      const borderX = ((trueX === 0 && dirs[1] === 'w') || (trueX === height-1 && dirs[1] === 'e'))
+      if (borderY && borderX) break
 
-      // If we're at an opposite border, move the only way we can...
-      if(trueY === 0 && dirs[0] === 'n') { this.map[trueY][trueX][dirs[1]] = 1; this.map[trueY][(trueX+(dirs[1] === 'w'?-1:1))][(dirs[1] === 'w'?'e':'w')] = 1; m = 1; }
-      else if(trueY === (this.h-1) && dirs[0] === 's') { this.map[trueY][trueX][dirs[1]] = 1; this.map[trueY][(trueX+(dirs[1] === 'w'?-1:1))][(dirs[1] === 'w'?'e':'w')] = 1; m = 1; }
-      else if(trueX === 0 && dirs[1] === 'w') { this.map[trueY][trueX][dirs[0]] = 1; this.map[(trueY+(dirs[0] === 'n'?-1:1))][trueX][(dirs[0] === 'n'?'s':'n')] = 1; m = 1; }
-      else if(trueX === (this.w-1) && dirs[1] === 'e') { this.map[trueY][trueX][dirs[0]] = 1; this.map[(trueY+(dirs[0] === 'n'?-1:1))][trueX][(dirs[0] === 'n'?'s':'n')] = 1; m = 1; }
+      if (borderX || borderY) {
+        map[trueY][trueX][dirs[(borderY ? 1 : 0)]] = 1
+        const row = trueY + (borderY ? 0 : (dirs[0] === 'n' ? -1 : 1))
+        const col = trueX + (borderX ? 0 : (dirs[1] === 'w' ? -1 : 1))
+        if (map[row][col] !== 1) continue
+        map[row][col] = 1
+        haveMoved = true
+      }
 
-      if(m === 0)
-      {
-        var mov = dirs[Math.floor((Math.random()*1000)%2)];
-
-        if(mov === 'n') { this.map[trueY][trueX][mov] = 1; this.map[(trueY-1)][trueX]['s'] = 1; }
-        else if(mov === 's') { this.map[trueY][trueX][mov] = 1; this.map[(trueY+1)][trueX]['n'] = 1; }
-        else if(mov === 'w') { this.map[trueY][trueX][mov] = 1; this.map[trueY][(trueX-1)]['e'] = 1; }
-        else if(mov === 'e') { this.map[trueY][trueX][mov] = 1; this.map[trueY][(trueX+1)]['w'] = 1; }
+      if(!haveMoved) {
+        let moveDir = dirs[Math.floor((Math.random()*1000)%2)]
+        map[trueY][trueX][moveDir] = 1
+        const row = (trueY + (moveDir === 'n' ? -1 : ( moveDir === 's' ? 1 : 0)))
+        const col = trueX + (moveDir === 'w' ? -1 : (moveDir === 'e' ? 1 : 0))
+        if (map[row][col] === 1) continue
+        map[row][col][getOppDirection(moveDir)] = 1
       }
     }
   }
+  return map
 }
 
 export {
   genBinaryTreeMaze
 }
-
-
-// Maze.prototype.toGrid = function()
-// {
-// 	var grid = new Array();
-// 	for(var mh = 0; mh < (this.h * 2 + 1); ++mh) { grid[mh] = new Array(); for(var mw = 0; mw < (this.w * 2 + 1); ++mw) { grid[mh][mw] = 0; } }
-
-// 	for(var y = 0; y < this.h; ++ y)
-// 	{
-// 		var py = (y * 2) + 1;
-
-// 		for(var x = 0; x < this.w; ++x)
-// 		{
-// 			var px = (x * 2) + 1;
-
-// 			grid[py][px] = 1;
-
-// 			if(this.map[y][x]['n']==1) { grid[(py-1)][px] = 1; }
-// 			if(this.map[y][x]['s']==1) { grid[(py+1)][px] = 1; }
-// 			if(this.map[y][x]['e']==1) { grid[py][(px+1)] = 1; }
-// 			if(this.map[y][x]['w']==1) { grid[py][(px-1)] = 1; }
-// 		}
-//   }
-
-// 	this.gridMap = grid;
-// 	this.gridW	= grid.length;
-// 	this.gridH	= grid[0].length;
-// };
-// Maze.prototype.build = function(dir)
-
-
-// 	this.toGrid();
-// };
