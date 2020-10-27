@@ -28,7 +28,6 @@ export default class Grid extends Component {
 
   resizeGrid () {
     const { nodeSize, grid } = this.state
-    this.resetGrid()
     const gridHeight = getNumRows(window.innerHeight, nodeSize)
     const gridWidth = getNumCols(window.innerWidth, nodeSize)
     const newGrid = initializeGrid(gridHeight, gridWidth, grid)
@@ -95,13 +94,12 @@ export default class Grid extends Component {
    * @param {String} mazeGenName 
    */
   generateMaze (mazeGenName) {
-    const {grid} = this.state
     this.resetGrid(true)
+    const {grid} = this.state
     let newGrid = []
-    if (mazeGenName.toLowerCase() === 'binary') {
-      newGrid = genBinaryTreeMaze(grid)
-    }
-    this.setState({ grid: newGrid })
+    if (mazeGenName.toLowerCase() === 'binary') newGrid = genBinaryTreeMaze(grid)
+    this.setState({ ...this.state, grid: newGrid })
+    this.resetGrid()
   }
 
   /**

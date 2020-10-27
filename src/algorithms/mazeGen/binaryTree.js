@@ -22,16 +22,22 @@ const genBinaryTreeMaze = (grid, bias) => {
     for(let x = 0; x < mapWidth; ++x) {
       const gridX = (x * 2)
 
-      newGrid[gridY][gridX].isWall = true
+      newGrid[gridY][gridX] = updateNode(newGrid[gridY][gridX])
 
-      if(map[y][x]['n'] === 1) newGrid[(gridY-1)][gridX].isWall = true
-      if(map[y][x]['s'] === 1) newGrid[(gridY+1)][gridX].isWall = true
-      if(map[y][x]['e'] === 1) newGrid[gridY][(gridX+1)].isWall = true
-      if(map[y][x]['w'] === 1) newGrid[gridY][(gridX-1)].isWall = true
+      if(map[y][x]['n'] === 1) newGrid[(gridY-1)][gridX] = updateNode(newGrid[(gridY-1)][gridX])
+      if(map[y][x]['s'] === 1) newGrid[(gridY+1)][gridX] = updateNode(newGrid[(gridY+1)][gridX])
+      if(map[y][x]['e'] === 1) newGrid[gridY][(gridX+1)] = updateNode(newGrid[gridY][(gridX+1)])
+      if(map[y][x]['w'] === 1) newGrid[gridY][(gridX-1)] = updateNode(newGrid[gridY][(gridX-1)])
     }
   }
   
   return newGrid
+}
+
+const updateNode = (node) => {
+  if (node.isStart || node.targetNum !== null) return node
+  node.isWall = true
+  return node
 }
 
 /**
