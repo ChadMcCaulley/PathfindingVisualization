@@ -1,4 +1,4 @@
-import {getAllNodes, sortNodesByDistance} from '../utils/node'
+import {getAllNodes, sortNodesByDistance} from '../../utils/node'
 
 /**
  * The dijsktra algorithm: Returns all visited nodes in the order which they were visted.
