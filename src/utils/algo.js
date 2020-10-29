@@ -1,5 +1,5 @@
 import {dijkstra, getShortestPathNodes} from '../algorithms/pathfinding/dijkstra'
-import {astar} from '../algorithms/pathfinding/astar'
+// import {astar} from '../algorithms/pathfinding/astar'
 import { getTargetNode, getStartNode } from '../utils/node'
 
 const state = {
@@ -25,6 +25,7 @@ const visualizeDijkstra = (grid, showAnimations) => {
  * @param {Array} shortestPathNodes
  */
 const animateDijkstra = (orderedVisistedNodes, shortestPathNodes) => {
+  if (!orderedVisistedNodes || !shortestPathNodes) return
   for (let i = 0; i <= orderedVisistedNodes.length; i++) {
     if (i === orderedVisistedNodes.length && state.showAnimations) {
       setTimeout(() => {
@@ -49,9 +50,6 @@ const animateDijkstra = (orderedVisistedNodes, shortestPathNodes) => {
  * @param {2DArray} grid
  */
 const visualizeAStar = (grid) => {
-  const startNode = getStartNode(grid)
-  const endNode = getTargetNode(grid)
-  const orderedVisistedNodes = astar(grid, startNode, endNode)
 }
 
 /**

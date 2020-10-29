@@ -40,7 +40,10 @@ export default function Node (props) {
       id={id}
       className={getNodeClassName({ isStart, isWall, targetNum })}
       draggable={isStart || targetNum !== null}
-      onDragStart={(e) => e.dataTransfer.setData('text/plain', `${getNodeId({ col, row })} ${getType()} ${getValue()}`)}
+      onDragStart={(e) => {
+        e.dataTransfer.setData('text/plain', `${getNodeId({ col, row })} ${getType()} ${getValue()}`)
+        e.node = { id: getNodeId({ col, row }), type: getType() }
+      }}
       onDrop={(e) => onDrop(e)}
       onDragOver={(e) => e.preventDefault()}
       onDragEnter={(e) => onDragEnter(e)}

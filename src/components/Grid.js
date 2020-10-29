@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Node from './Node'
 import { genBinaryTreeMaze } from '../algorithms/mazeGen/binaryTree'
 import { visualizeDijkstra, visualizeAStar } from '../utils/algo'
-import { toggleWallNodes, getNodeId, getNodeClassName, getNodeById } from '../utils/node'
+import { toggleWallNodes, getNodeId, getNodeClassName, getNodeById, getStartNode } from '../utils/node'
 import { initializeGrid, getNumRows, getNumCols } from '../utils/grid'
 
 
@@ -87,22 +87,28 @@ export default class Grid extends Component {
     this.setState({...this.state, grid: newGrid })
   }
 
-  handleDragEnter(event) {
+  async handleDragEnter(event) {
     event.preventDefault()
     const { prevDragOver, grid } = this.state
     const { pathfindingAlgo } = this.props
     const dragOver = event.target.id
-    if (prevDragOver === dragOver) return
-    this.setState({ prevDragOver: dragOver })
-    if (!pathfindingAlgo) return
-    const tempGrid = grid.map(row => {
-      return row.map(node => {
-        node.targetNum = null
-        if (node.id === dragOver) node.targetNum = 1
-        return node
+    const draggedNode = event.node
+    if (prevDragOver === dragOver || !dragOver) return
+    this.setState({ prevDragOver: dragOver }, () => {
+      if (!pathfindingAlgo) return
+      const tempGrid = grid.map(row => {
+        return row.map(node => {
+          if (draggedNode.type === 'start') {
+            node.isStart = node.id === dragOver
+          } else {
+            node.targetNum = null
+            if (node.id === dragOver ) node.targetNum = 1
+          }
+          return node
+        })
       })
+      this.visualizeAlgo(pathfindingAlgo, false, tempGrid)
     })
-    this.visualizeAlgo(pathfindingAlgo, false, tempGrid)
   }
 
   /**
@@ -113,7 +119,7 @@ export default class Grid extends Component {
     if (!algoName) return
     let {grid} = this.state
     if (tempGrid) grid = tempGrid
-    else this.resetGrid(false, false)
+    this.resetGrid(false, false)
     if (algoName.toLowerCase() === 'dijkstra') visualizeDijkstra(grid, showAnimation)
     if (algoName.toLowerCase() === 'astar') visualizeAStar(grid)
   }

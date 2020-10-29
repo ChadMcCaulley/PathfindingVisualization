@@ -27,6 +27,7 @@ export default class App extends Component {
           onGenBinaryTreeMaze={() => gridRef.current.generateMaze('binary')}
         />
         <Grid
+          ref={gridRef}
           pathfindingAlgo={pathfindingAlgo}
           updatePathfindingAlgo={(value) => this.setPathfindingAlgo(value)}
         />
