@@ -5,11 +5,6 @@ import { FaRecordVinyl, FaStreetView } from 'react-icons/fa'
 import { getNodeId, getNodeClassName } from '../utils/node'
 
 export default function Node (props) {
-  const getType = () => {
-    if (props.isStart) return 'start'
-    else if (props.targetNum !== null) return 'target'
-  }
-
   const {
     id,
     size,
@@ -21,8 +16,19 @@ export default function Node (props) {
     onMouseDown,
     onMouseEnter,
     onMouseUp,
-    onDrop
+    onDrop,
+    onDragEnter
   } = props
+
+  const getType = () => {
+    if (props.isStart) return 'start'
+    else if (props.targetNum !== null) return 'target'
+  }
+
+  const getValue = () => {
+    if (getType() === 'start') return isStart
+    return targetNum
+  }
 
   let icon = null
   if (isStart) icon = <FaStreetView className="node-icon"/>
@@ -34,10 +40,10 @@ export default function Node (props) {
       id={id}
       className={getNodeClassName({ isStart, isWall, targetNum })}
       draggable={isStart || targetNum !== null}
-      onDragStart={(e) => e.dataTransfer.setData('text/plain', `${getNodeId({ col, row })} ${getType()}`)}
+      onDragStart={(e) => e.dataTransfer.setData('text/plain', `${getNodeId({ col, row })} ${getType()} ${getValue()}`)}
       onDrop={(e) => onDrop(e)}
-      onDragEnter={(e) => e.preventDefault()}
       onDragOver={(e) => e.preventDefault()}
+      onDragEnter={(e) => onDragEnter(e)}
       onMouseDown={() => onMouseDown(row, col) }
       onMouseEnter={() => onMouseEnter(row, col) }
       onMouseUp={() => onMouseUp() }
@@ -58,4 +64,5 @@ Node.propTypes = {
   onMouseEnter: PropTypes.func.isRequired,
   onMouseUp: PropTypes.func.isRequired,
   onDrop: PropTypes.func.isRequired,
+  onDragEnter: PropTypes.func.isRequired,
 }

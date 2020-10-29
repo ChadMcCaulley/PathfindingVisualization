@@ -2,17 +2,21 @@ import {dijkstra, getShortestPathNodes} from '../algorithms/pathfinding/dijkstra
 import {astar} from '../algorithms/pathfinding/astar'
 import { getTargetNode, getStartNode } from '../utils/node'
 
-
+const state = {
+  showAnimations: true
+}
 /**
  * Visualize the dijkstra algorithm
  * @param {2DArray} grid
+ * @param {Boolean} showAnimations
  */
-const visualizeDijkstra = (grid) => {
+const visualizeDijkstra = (grid, showAnimations) => {
+  state.showAnimations = showAnimations
   const startNode = getStartNode(grid)
   const endNode = getTargetNode(grid)
   const orderedVisistedNodes = dijkstra(grid, startNode, endNode)
   const shortestPathNodes = getShortestPathNodes(endNode)
-  animateDijkstra(orderedVisistedNodes, shortestPathNodes)
+  animateDijkstra(orderedVisistedNodes, shortestPathNodes, showAnimations)
 }
 
 /**
@@ -22,16 +26,21 @@ const visualizeDijkstra = (grid) => {
  */
 const animateDijkstra = (orderedVisistedNodes, shortestPathNodes) => {
   for (let i = 0; i <= orderedVisistedNodes.length; i++) {
-    if (i === orderedVisistedNodes.length) {
+    if (i === orderedVisistedNodes.length && state.showAnimations) {
       setTimeout(() => {
         animateShortestPath(shortestPathNodes)
       }, 10 * i)
-      return
-    }
-    setTimeout(() => {
+    } else if (i === orderedVisistedNodes.length) {
+      animateShortestPath(shortestPathNodes)
+    } else if (state.showAnimations) {
+      setTimeout(() => {
+        const node = orderedVisistedNodes[i]
+        document.getElementById(`node-${node.row}-${node.col}`).className = 'node visited-node'
+      }, 10 * i)
+    } else {
       const node = orderedVisistedNodes[i]
       document.getElementById(`node-${node.row}-${node.col}`).className = 'node visited-node'
-    }, 10 * i)
+    }
   }
 }
 
@@ -43,19 +52,19 @@ const visualizeAStar = (grid) => {
   const startNode = getStartNode(grid)
   const endNode = getTargetNode(grid)
   const orderedVisistedNodes = astar(grid, startNode, endNode)
-  console.log(orderedVisistedNodes)
 }
 
 /**
  * Change the class of the nodes that make up the optimal or shortest path
- * @param {Array} shortestPathNodes 
+ * @param {Array} shortestPathNodes
+ * @param {Boolean} showAnimations
  */
 const animateShortestPath = (shortestPathNodes) => {
   for (let i = 0; i < shortestPathNodes.length; i++) {
-    setTimeout(() => {
+    // setTimeout(() => {
       const node = shortestPathNodes[i]
       document.getElementById(`node-${node.row}-${node.col}`).className = 'node shortest-path-node'
-    }, 50 * i)
+    // }, 50 * i)
   }
 }
 

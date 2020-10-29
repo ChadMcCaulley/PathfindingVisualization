@@ -12,7 +12,8 @@ export default class Grid extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
-      nodeSize: 25
+      nodeSize: 25,
+      prevDragOver: null
     }
     this.resizeGrid = this.resizeGrid.bind(this)
   }
@@ -22,11 +23,17 @@ export default class Grid extends Component {
     window.addEventListener("resize", this.resizeGrid)
   }
 
+  componentDidUpdate(prevProps) {
+    const { pathfindingAlgo } = this.props
+    if (prevProps.pathfindingAlgo !== pathfindingAlgo) this.visualizeAlgo(pathfindingAlgo)
+  }
+
   componentWillUnmount() {
     window.removeEventListener("resize", this.resizeGrid)
   }
 
   resizeGrid () {
+    this.resetGrid()
     const { nodeSize, grid } = this.state
     const gridHeight = getNumRows(window.innerHeight, nodeSize)
     const gridWidth = getNumCols(window.innerWidth, nodeSize)
@@ -52,12 +59,14 @@ export default class Grid extends Component {
     this.setState({mouseIsPressed: false})
   }
 
-  handleDrop(e) {
+  handleDrop(event) {
     const { grid } = this.state
-    const data = e.dataTransfer.getData('text')
-    const type = data.split(' ')[1]
-    const prevNodeId = data.split(' ')[0]
-    const updatedNodeId = e.target.id
+    const data = event.dataTransfer.getData('text')
+    const dataValues = data.split(' ')
+    const value = dataValues[2]
+    const type = dataValues[1]
+    const prevNodeId = dataValues[0]
+    const updatedNodeId = event.target.id
     const previousNode = getNodeById(grid, prevNodeId)
     const updatedNode = getNodeById(grid, updatedNodeId)
     updatedNode.isWall = false
@@ -65,7 +74,7 @@ export default class Grid extends Component {
       previousNode.isStart = false
       updatedNode.isStart = true
     } else {
-      updatedNode.targetNum = previousNode.targetNum
+      updatedNode.targetNum = parseInt(value)
       previousNode.targetNum = null
     }
     const newGrid = grid.map(row => {
@@ -78,14 +87,34 @@ export default class Grid extends Component {
     this.setState({...this.state, grid: newGrid })
   }
 
+  handleDragEnter(event) {
+    event.preventDefault()
+    const { prevDragOver, grid } = this.state
+    const { pathfindingAlgo } = this.props
+    const dragOver = event.target.id
+    if (prevDragOver === dragOver) return
+    this.setState({ prevDragOver: dragOver })
+    if (!pathfindingAlgo) return
+    const tempGrid = grid.map(row => {
+      return row.map(node => {
+        node.targetNum = null
+        if (node.id === dragOver) node.targetNum = 1
+        return node
+      })
+    })
+    this.visualizeAlgo(pathfindingAlgo, false, tempGrid)
+  }
+
   /**
    * Visualize a pathfinding algorithm
    * @param {String} algoName 
    */
-  visualizeAlgo (algoName) {
-    const {grid} = this.state
-    this.resetGrid()
-    if (algoName.toLowerCase() === 'dijkstra') visualizeDijkstra(grid)
+  visualizeAlgo (algoName, showAnimation = true, tempGrid = null) {
+    if (!algoName) return
+    let {grid} = this.state
+    if (tempGrid) grid = tempGrid
+    else this.resetGrid(false, false)
+    if (algoName.toLowerCase() === 'dijkstra') visualizeDijkstra(grid, showAnimation)
     if (algoName.toLowerCase() === 'astar') visualizeAStar(grid)
   }
 
@@ -107,7 +136,8 @@ export default class Grid extends Component {
    * @param {Booelan} resetWalls
    * @return {Array[Array]}
    */
-  resetGrid (resetWalls = false) {
+  resetGrid (resetWalls = false, resetAlgo = true) {
+    if (resetAlgo) this.props.updatePathfindingAlgo(null)
     const {grid} = this.state
     grid.forEach(row => {
       row.forEach(node => {
@@ -142,6 +172,7 @@ export default class Grid extends Component {
                       isStart={isStart}
                       isWall={isWall}
                       onDrop={(e) => this.handleDrop(e)}
+                      onDragEnter={(e) => this.handleDragEnter(e)}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                       onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}
                       onMouseUp={() => this.handleMouseUp()}

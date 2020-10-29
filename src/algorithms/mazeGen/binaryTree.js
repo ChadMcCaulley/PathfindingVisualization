@@ -8,10 +8,8 @@ import { getGridWidth, getGridHeight } from '../../utils/grid'
 const genBinaryTreeMaze = (grid, bias) => {
   let height = getGridHeight(grid)
   let width = getGridWidth(grid)
-  if (height % 2 === 0) --height
-  if (width % 2 === 0) --width
-  const mapHeight = Math.round(height / 2)
-  const mapWidth = Math.round(width / 2)
+  const mapHeight = Math.ceil(height / 2)
+  const mapWidth = Math.ceil(width / 2)
   const map = getMap(bias, mapHeight, mapWidth)
 
   const newGrid = grid.map(row => row.map(col => col))
