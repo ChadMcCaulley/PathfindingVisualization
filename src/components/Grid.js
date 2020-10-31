@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import Node from './Node'
 import { genBinaryTreeMaze } from '../algorithms/mazeGen/binaryTree'
-import { visualizeDijkstra, visualizeAStar } from '../utils/algo'
-import { toggleWallNodes, getNodeId, getNodeClassName, getNodeById, getStartNode } from '../utils/node'
-import { initializeGrid, getNumRows, getNumCols } from '../utils/grid'
+import { visualizeDijkstra } from '../algorithms/pathfinding/dijkstra'
+import { visualizeAStar } from '../algorithms/pathfinding/astar'
+import { toggleWallNodes, getNodeId, getNodeClassName, getNodeById } from '../utils/node'
+import { initializeGrid, getNumRows, getNumCols, swapNodes } from '../utils/grid'
 
 
 export default class Grid extends Component {
@@ -13,7 +14,8 @@ export default class Grid extends Component {
       grid: [],
       mouseIsPressed: false,
       nodeSize: 25,
-      prevDragOver: null
+      prevDragOver: null,
+      dragTimeout: null
     }
     this.resizeGrid = this.resizeGrid.bind(this)
   }
@@ -67,23 +69,7 @@ export default class Grid extends Component {
     const type = dataValues[1]
     const prevNodeId = dataValues[0]
     const updatedNodeId = event.target.id
-    const previousNode = getNodeById(grid, prevNodeId)
-    const updatedNode = getNodeById(grid, updatedNodeId)
-    updatedNode.isWall = false
-    if (type.toLowerCase() === 'start') {
-      previousNode.isStart = false
-      updatedNode.isStart = true
-    } else {
-      updatedNode.targetNum = parseInt(value)
-      previousNode.targetNum = null
-    }
-    const newGrid = grid.map(row => {
-      return row.map(node => {
-        if (node.id === updatedNodeId) return updatedNode
-        else if (node.id === prevNodeId) return previousNode
-        return node
-      })
-    })
+    const newGrid = swapNodes(grid, prevNodeId, updatedNodeId, type, value)
     this.setState({...this.state, grid: newGrid })
   }
 
@@ -96,18 +82,18 @@ export default class Grid extends Component {
     if (prevDragOver === dragOver || !dragOver) return
     this.setState({ prevDragOver: dragOver }, () => {
       if (!pathfindingAlgo) return
-      const tempGrid = grid.map(row => {
+      const newGrid = grid.map(row => {
         return row.map(node => {
-          if (draggedNode.type === 'start') {
-            node.isStart = node.id === dragOver
-          } else {
+          if (draggedNode.type === 'start') node.isStart = node.id === dragOver
+          else {
             node.targetNum = null
-            if (node.id === dragOver ) node.targetNum = 1
+            if (node.id === dragOver && !node.isStart) node.targetNum = draggedNode.targetNum
           }
           return node
         })
       })
-      this.visualizeAlgo(pathfindingAlgo, false, tempGrid)
+
+      this.visualizeAlgo(pathfindingAlgo, false, newGrid)
     })
   }
 
@@ -117,9 +103,8 @@ export default class Grid extends Component {
    */
   visualizeAlgo (algoName, showAnimation = true, tempGrid = null) {
     if (!algoName) return
-    let {grid} = this.state
-    if (tempGrid) grid = tempGrid
     this.resetGrid(false, false)
+    let {grid} = this.state
     if (algoName.toLowerCase() === 'dijkstra') visualizeDijkstra(grid, showAnimation)
     if (algoName.toLowerCase() === 'astar') visualizeAStar(grid)
   }

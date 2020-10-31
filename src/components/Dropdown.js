@@ -46,7 +46,10 @@ export default function Dropdown (props) {
 }
 
 Dropdown.propTypes = {
-
+  label: PropTypes.string.isRequired,
+  btnText: PropTypes.string,
+  options: PropTypes.array.isRequired,
+  submitHandler: PropTypes.func.isRequired,
 }
 
 Dropdown.defaultProps = {

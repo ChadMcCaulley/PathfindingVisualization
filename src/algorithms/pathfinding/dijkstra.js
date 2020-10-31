@@ -1,4 +1,6 @@
 import {getAllNodes, sortNodesByDistance} from '../../utils/node'
+import { getTargetNode, getStartNode, setNodeClass } from '../../utils/node'
+import { animateShortestPath } from '../../utils/algo'
 
 /**
  * The dijsktra algorithm: Returns all visited nodes in the order which they were visted.
@@ -66,7 +68,38 @@ const getShortestPathNodes = (endNode) => {
   return shortestPathNodes
 }
 
+/**
+ * Visualize the dijkstra algorithm
+ * @param {2DArray} grid
+ * @param {Boolean} showAnimations
+ */
+const visualizeDijkstra = (grid, showAnimations) => {
+  const startNode = getStartNode(grid)
+  const endNode = getTargetNode(grid)
+  const orderedVisistedNodes = dijkstra(grid, startNode, endNode)
+  const shortestPathNodes = getShortestPathNodes(endNode)
+  animateDijkstra(orderedVisistedNodes, shortestPathNodes, showAnimations)
+}
+
+/**
+ * Change the class assigned to the nodes visted to allow for the visualization of the dijkstra algorithm
+ * @param {Array} orderedVisistedNodes
+ * @param {Array} shortestPathNodes
+ * @param {Boolean} showAnimations
+ */
+const animateDijkstra = (orderedVisistedNodes, shortestPathNodes, showAnimations) => {
+  if (!orderedVisistedNodes || !shortestPathNodes) return
+  orderedVisistedNodes.forEach((node, i) => {
+    if (showAnimations) setTimeout(() => setNodeClass(node, 'visited-node'), 10 * i)
+    else setNodeClass(node, 'visited-node-no-ani')
+  })
+  if (showAnimations) {
+    setTimeout(() => animateShortestPath(shortestPathNodes, showAnimations), 10 * orderedVisistedNodes.length)
+  } else animateShortestPath(shortestPathNodes, showAnimations)
+}
+
 export {
+  visualizeDijkstra,
   dijkstra,
   getShortestPathNodes
 }

@@ -122,6 +122,15 @@ const createNode = (col, row, isStart = false, targetNum = null) => {
   }
 }
 
+/**
+ * Set the classNamename for a given node
+ * @param {Object} node
+ * @param {String} className
+ */
+const setNodeClass = (node, className) => {
+  document.getElementById(`node-${node.row}-${node.col}`).className = `node ${className}`
+}
+
 export {
   getAllNodes,
   sortNodesByDistance,
@@ -131,5 +140,6 @@ export {
   createNode,
   getStartNode,
   getTargetNode,
-  getNodeById
+  getNodeById,
+  setNodeClass
 }

@@ -9,6 +9,16 @@
 const astar = (grid, startNode, endNode) => {
 }
 
+/**
+ * Visualize the Astar algorithm
+ * @param {2DArray} grid
+ * @param {Boolean} showAnimations
+ */
+const visualizeAStar = (grid, showAnimations) => {
+
+}
+
 export {
-  astar
+  astar,
+  visualizeAStar
 }

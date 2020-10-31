@@ -42,7 +42,7 @@ export default function Node (props) {
       draggable={isStart || targetNum !== null}
       onDragStart={(e) => {
         e.dataTransfer.setData('text/plain', `${getNodeId({ col, row })} ${getType()} ${getValue()}`)
-        e.node = { id: getNodeId({ col, row }), type: getType() }
+        e.node = { id: getNodeId({ col, row }), type: getType(), targetNum }
       }}
       onDrop={(e) => onDrop(e)}
       onDragOver={(e) => e.preventDefault()}

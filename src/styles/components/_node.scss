@@ -21,70 +21,71 @@
   cursor: pointer;
 }
 
-.visited-node {
+.visited-node-no-ani {
   background-color: $seen;
 }
 
-.shortest-path-node {
+.optimal-path-node-no-ani {
   background-color: $optimal;
 }
-// .visited-node {
-//   animation-name: visitedAnimation;
-//   animation-duration: 1.5s;
-//   animation-timing-function: ease-out;
-//   animation-delay: 0;
-//   animation-direction: alternate;
-//   animation-iteration-count: 1;
-//   animation-fill-mode: forwards;
-//   animation-play-state: running;
-// }
 
-// @keyframes visitedAnimation {
-//   0% {
-//     transform: scale(0.3);
-//     background-color: $looking;
-//     border-radius: 100%;
-//   }
+.visited-node {
+  animation-name: visitedAnimation;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
 
-//   50% {
-//     background-color: $assessing;
-//   }
+@keyframes visitedAnimation {
+  0% {
+    transform: scale(0.3);
+    background-color: $looking;
+    border-radius: 100%;
+  }
 
-//   75% {
-//     transform: scale(1.2);
-//     background-color: $assessed;
-//   }
+  50% {
+    background-color: $assessing;
+  }
 
-//   100% {
-//     transform: scale(1);
-//     background-color: $seen;
-//   }
-// }
+  75% {
+    transform: scale(1.2);
+    background-color: $assessed;
+  }
 
-// .shortest-path-node {
-//   animation-name: shortestPath;
-//   animation-duration: 1.5s;
-//   animation-timing-function: ease-out;
-//   animation-delay: 0;
-//   animation-direction: alternate;
-//   animation-iteration-count: 1;
-//   animation-fill-mode: forwards;
-//   animation-play-state: running;
-// }
+  100% {
+    transform: scale(1);
+    background-color: $seen;
+  }
+}
 
-// @keyframes shortestPath {
-//   0% {
-//     transform: scale(0.6);
-//     background-color: $optimal;
-//   }
+.optimal-path-node {
+  animation-name: optimalPath;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-play-state: running;
+}
 
-//   50% {
-//     transform: scale(1.2);
-//     background-color: $optimal;
-//   }
+@keyframes optimalPath {
+  0% {
+    transform: scale(0.6);
+    background-color: $optimal;
+  }
 
-//   100% {
-//     transform: scale(1);
-//     background-color: $optimal;
-//   }
-// }
+  50% {
+    transform: scale(1.2);
+    background-color: $optimal;
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: $optimal;
+  }
+}
