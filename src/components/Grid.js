@@ -105,8 +105,9 @@ export default class Grid extends Component {
     if (!algoName) return
     this.resetGrid(false, false)
     let {grid} = this.state
-    if (algoName.toLowerCase() === 'dijkstra') visualizeDijkstra(grid, showAnimation)
-    if (algoName.toLowerCase() === 'astar') visualizeAStar(grid)
+    algoName = algoName.toLowerCase()
+    if (algoName === 'dijkstra') visualizeDijkstra(grid, showAnimation)
+    else if (algoName === 'astar') visualizeAStar(grid)
   }
 
   /**
