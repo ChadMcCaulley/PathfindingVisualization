@@ -5,7 +5,7 @@
 }
 
 .node-icon {
-  transform: scale(1.5) translate(15%, 15%);
+  transform: scale(1.5) translate(18%, 18%);
 }
 
 .wall-node {
@@ -19,6 +19,14 @@
 
 .target-node {
   cursor: pointer;
+}
+
+.visited-node-no-ani {
+  background-color: $seen;
+}
+
+.optimal-path-node-no-ani {
+  background-color: $optimal;
 }
 
 .visited-node {
@@ -54,8 +62,8 @@
   }
 }
 
-.shortest-path-node {
-  animation-name: shortestPath;
+.optimal-path-node {
+  animation-name: optimalPath;
   animation-duration: 1.5s;
   animation-timing-function: ease-out;
   animation-delay: 0;
@@ -65,7 +73,7 @@
   animation-play-state: running;
 }
 
-@keyframes shortestPath {
+@keyframes optimalPath {
   0% {
     transform: scale(0.6);
     background-color: $optimal;

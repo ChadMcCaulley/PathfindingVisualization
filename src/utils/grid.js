@@ -1,4 +1,4 @@
-import { createNode } from './node'
+import { createNode, getNodeById } from './node'
 
 /**
  * Create the initial grid of nodes based on the given number or rows and columns
@@ -70,10 +70,40 @@ const getGridHeight = (grid) => grid.length
  */
 const getGridWidth = (grid) => grid[0].length
 
+/**
+ * Get a new version of the grid with the two nodes swapped
+ * @param {2DArray} grid 
+ * @param {String} type 
+ * @param {String} prevNodeId 
+ * @param {String} updatedNodeId 
+ * @param {Integer} newValue 
+ * @return {2DArray}
+ */
+const swapNodes = (grid, prevNodeId, updatedNodeId, type = 'start', newValue = null) => {
+  const previousNode = getNodeById(grid, prevNodeId)
+  const updatedNode = getNodeById(grid, updatedNodeId)
+  updatedNode.isWall = false
+  if (type.toLowerCase() === 'start') {
+    previousNode.isStart = false
+    updatedNode.isStart = true
+  } else {
+    updatedNode.targetNum = parseInt(newValue)
+    previousNode.targetNum = null
+  }
+  return grid.map(row => {
+    return row.map(node => {
+      if (node.id === updatedNodeId) return updatedNode
+      else if (node.id === prevNodeId) return previousNode
+      return node
+    })
+  })
+}
+
 export {
   initializeGrid,
   getNumRows,
   getNumCols,
   getGridHeight,
-  getGridWidth
+  getGridWidth,
+  swapNodes
 }
