@@ -1,4 +1,4 @@
-import { getTargetNode, getStartNode } from '../../utils/node'
+import { getTargetNode, getStartNode, setNodeClass } from '../../utils/node'
 
 /**
  * Get the initial grid values
@@ -21,11 +21,12 @@ const getNeighbors = (grid, node) => {
   const result = []
   const x = node.pos.x
   const y = node.pos.y
-
+  
   if(grid[x-1] && grid[x-1][y]) result.push(grid[x-1][y])
   if(grid[x+1] && grid[x+1][y]) result.push(grid[x+1][y])
   if(grid[x][y-1] && grid[x][y-1]) result.push(grid[x][y-1])
   if(grid[x][y+1] && grid[x][y+1]) result.push(grid[x][y+1])
+
   return result
 }
 
@@ -50,11 +51,11 @@ const aStar = (originalGrid) => {
   const grid = getInitialGrid(originalGrid)
   const startNode = getStartNode(grid)
   const endNode = getTargetNode(grid)
-  let openList = []
+  const openList = []
   const closedList = []
   openList.push(startNode)
-  while (openList.length > 1) {
-    // Grab the lowest f(x) to process next
+  while (openList.length > 0) {
+    // Grab the lowest f(x) to process next'
     let lowIndex = 0;
     for (let i = 0; i < openList.length; i++) {
       if (openList[i].f < openList[lowIndex].f) lowIndex = i
@@ -73,16 +74,14 @@ const aStar = (originalGrid) => {
     }
 
     // Normal case -- move currentNode from open to closed, process each of its neighbors
-    openList = grid.filter(node => node.id !== currentNode.id)
+    openList.splice(lowIndex)
     closedList.push(currentNode)
     const neighbors = getNeighbors(grid, currentNode)
-
     for(var i = 0; i < neighbors.length; i++) {
-      const neighbor = neighbors[i];
+      const neighbor = neighbors[i]
       if(closedList.indexOf(neighbor) !== -1 || neighbor.isWall) continue
       let gScore = currentNode.g + 1
       let gScoreIsBest = false
-
 
       if(openList.indexOf(neighbor) === -1) {
         gScoreIsBest = true
@@ -98,7 +97,7 @@ const aStar = (originalGrid) => {
       }
     }
   }
-  return []
+  return closedList
 }
 
 /**
@@ -108,7 +107,19 @@ const aStar = (originalGrid) => {
  */
 const visualizeAStar = (grid, showAnimations) => {
   const orderedVisistedNodes = aStar(grid)
-  console.log(orderedVisistedNodes)
+  animateAStar(orderedVisistedNodes, true)
+}
+
+/**
+ * Change the class assigned to the nodes visted to allow for the visualization of the a star algorithm
+ * @param {Array} orderedVisistedNodes
+ */
+const animateAStar = (orderedVisistedNodes, showAnimations) => {
+  if (!orderedVisistedNodes) return
+  orderedVisistedNodes.forEach((node, i) => {
+    if (showAnimations) setTimeout(() => setNodeClass(node, 'visited-node'), 10 * i)
+    else setNodeClass(node, 'visited-node-no-ani')
+  })
 }
 
 export {

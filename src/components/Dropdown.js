@@ -6,7 +6,8 @@ export default function Dropdown (props) {
     label,
     btnText,
     options,
-    submitHandler
+    submitHandler,
+    disabled
   } = props
 
   const [value, setValue] = useState(options[0].text)
@@ -17,7 +18,7 @@ export default function Dropdown (props) {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    submitHandler(value)
+    if (!disabled) submitHandler(value)
   }
 
   const allOptions = options.map((opt, index) => {
@@ -29,7 +30,7 @@ export default function Dropdown (props) {
   })
   return (
     <form
-      className="dropdown-container"
+      className={`dropdown-container ${disabled ? 'disabled' : ''}`}
       onSubmit={handleSubmit}
     >
       <label htmlFor="dropdown-select"> {label} </label>
@@ -50,8 +51,10 @@ Dropdown.propTypes = {
   btnText: PropTypes.string,
   options: PropTypes.array.isRequired,
   submitHandler: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
 }
 
 Dropdown.defaultProps = {
-  btnText: 'Start'
+  btnText: 'Start',
+  disabled: false
 }

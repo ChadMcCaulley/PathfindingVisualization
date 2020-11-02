@@ -6,7 +6,9 @@ export default function Navbar (props) {
   const {
     updatePathfindingAlgo,
     onGenBinaryTreeMaze,
-    onResetGrid
+    onResetGrid,
+    disableAlgoButtons,
+    disabled
   } = props
 
   const pathfindingOptions = [
@@ -15,6 +17,7 @@ export default function Navbar (props) {
   ]
 
   const handlePathfindingSubmit = (pathfinderName) => {
+    disableAlgoButtons()
     const pathfindingAlgo = pathfindingOptions.filter(obj => obj.text === pathfinderName)[0]
     const value = 'value' in pathfindingAlgo ? pathfindingAlgo.value : pathfindingAlgo.text
     updatePathfindingAlgo(value)
@@ -27,6 +30,7 @@ export default function Navbar (props) {
         options={pathfindingOptions}
         btnText="Visualize"
         submitHandler={(value) => handlePathfindingSubmit(value) }
+        disabled={disabled}
       />
       <button
         className="btn"
@@ -46,5 +50,11 @@ export default function Navbar (props) {
 
 Navbar.propTypes = {
   onGenBinaryTreeMaze: PropTypes.func.isRequired,
-  onResetGrid: PropTypes.func.isRequired
+  onResetGrid: PropTypes.func.isRequired,
+  disableAlgoButtons: PropTypes.func,
+  disabled: PropTypes.bool
+}
+
+Navbar.defaultProps = {
+  disabled: false
 }

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Node from './Node'
 import { genBinaryTreeMaze } from '../algorithms/mazeGen/binaryTree'
 import { visualizeDijkstra } from '../algorithms/pathfinding/dijkstra'
 import { visualizeAStar } from '../algorithms/pathfinding/astar'
-import { toggleWallNodes, getNodeId, getNodeClassName, getNodeById } from '../utils/node'
+import { toggleWallNodes, getNodeId, getNodeClassName } from '../utils/node'
 import { initializeGrid, getNumRows, getNumCols, swapNodes } from '../utils/grid'
 
 
@@ -18,6 +19,12 @@ export default class Grid extends Component {
       dragTimeout: null
     }
     this.resizeGrid = this.resizeGrid.bind(this)
+  }
+
+  static propTypes = {
+    pathfindingAlgo: PropTypes.string,
+    updatePathfindingAlgo: PropTypes.func.isRequired,
+    enableAlgoButtons: PropTypes.func.isRequired,
   }
 
   componentDidMount() {
@@ -103,11 +110,13 @@ export default class Grid extends Component {
    */
   visualizeAlgo (algoName, showAnimation = true, tempGrid = null) {
     if (!algoName) return
-    this.resetGrid(false, false)
+    this.resetGrid(false, true)
     let {grid} = this.state
+    if (tempGrid) grid = tempGrid
     algoName = algoName.toLowerCase()
     if (algoName === 'dijkstra') visualizeDijkstra(grid, showAnimation)
     else if (algoName === 'astar') visualizeAStar(grid)
+    this.props.enableAlgoButtons()
   }
 
   /**
@@ -129,6 +138,7 @@ export default class Grid extends Component {
    * @return {Array[Array]}
    */
   resetGrid (resetWalls = false, resetAlgo = true) {
+    this.props.enableAlgoButtons()
     if (resetAlgo) this.props.updatePathfindingAlgo(null)
     const {grid} = this.state
     grid.forEach(row => {

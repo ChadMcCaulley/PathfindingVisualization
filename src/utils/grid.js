@@ -82,6 +82,7 @@ const getGridWidth = (grid) => grid[0].length
 const swapNodes = (grid, prevNodeId, updatedNodeId, type = 'start', newValue = null) => {
   const previousNode = getNodeById(grid, prevNodeId)
   const updatedNode = getNodeById(grid, updatedNodeId)
+  if (!updatedNode || !previousNode) return grid 
   updatedNode.isWall = false
   if (type.toLowerCase() === 'start') {
     previousNode.isStart = false
