@@ -1,36 +1,23 @@
-import React, {useState} from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
-export default function Dropdown (props) {
-  const {
-    label,
-    btnText,
-    options,
-    submitHandler,
-    disabled
-  } = props
+export default function Dropdown(props) {
+  const { label, btnText, options, submitHandler, disabled } = props;
 
-  const [value, setValue] = useState(options[0].text)
+  const [value, setValue] = useState(options[0].text);
 
   const handleChange = (event) => {
-    setValue(event.target.value)
-  }
+    setValue(event.target.value);
+  };
 
   const handleSubmit = (event) => {
-    event.preventDefault()
-    if (!disabled) submitHandler(value)
-  }
+    event.preventDefault();
+    if (!disabled) submitHandler(value);
+  };
 
-  const allOptions = options.map((opt, index) => {
-    return (
-      <option key={index}>
-        {opt.text}
-      </option>
-    )
-  })
   return (
     <form
-      className={`dropdown-container ${disabled ? 'disabled' : ''}`}
+      className={`dropdown-container ${disabled ? "disabled" : ""}`}
       onSubmit={handleSubmit}
     >
       <label htmlFor="dropdown-select"> {label} </label>
@@ -38,12 +25,22 @@ export default function Dropdown (props) {
         name="dropdown-select"
         value={value}
         onChange={handleChange}
+        disabled={disabled}
       >
-        {allOptions}
+        {options.map((opt) => (
+          <option key={opt.value || opt.text} value={opt.text}>
+            {opt.text}
+          </option>
+        ))}
       </select>
-      <input type="submit" value={btnText} className="btn" />
+      <input
+        type="submit"
+        value={btnText}
+        className="btn"
+        disabled={disabled}
+      />
     </form>
-  )
+  );
 }
 
 Dropdown.propTypes = {
@@ -51,10 +48,5 @@ Dropdown.propTypes = {
   btnText: PropTypes.string,
   options: PropTypes.array.isRequired,
   submitHandler: PropTypes.func.isRequired,
-  disabled: PropTypes.bool
-}
-
-Dropdown.defaultProps = {
-  btnText: 'Start',
-  disabled: false
-}
+  disabled: PropTypes.bool,
+};

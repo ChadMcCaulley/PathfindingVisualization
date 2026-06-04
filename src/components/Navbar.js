@@ -1,27 +1,34 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Dropdown from './Dropdown'
+import PropTypes from "prop-types";
+import Dropdown from "./Dropdown";
 
-export default function Navbar (props) {
+export default function Navbar(props) {
   const {
     updatePathfindingAlgo,
     onGenBinaryTreeMaze,
     onResetGrid,
+    onTogglePause,
+    isPaused,
     disableAlgoButtons,
-    disabled
-  } = props
+    toggleAlgoButtons,
+    disabled,
+  } = props;
 
   const pathfindingOptions = [
-    { text: 'Dijkstra' },
-    { text: 'A*', value: 'astar' }
-  ]
+    { text: "Dijkstra", value: "dijkstra" },
+    { text: "A*", value: "astar" },
+    { text: "Breadth-First Search", value: "bfs" },
+    { text: "Depth-First Search", value: "dfs" },
+  ];
 
   const handlePathfindingSubmit = (pathfinderName) => {
-    disableAlgoButtons()
-    const pathfindingAlgo = pathfindingOptions.filter(obj => obj.text === pathfinderName)[0]
-    const value = 'value' in pathfindingAlgo ? pathfindingAlgo.value : pathfindingAlgo.text
-    updatePathfindingAlgo(value)
-  }
+    disableAlgoButtons();
+    const selectedAlgo = pathfindingOptions.find(
+      (obj) => obj.text === pathfinderName,
+    );
+    if (selectedAlgo) {
+      updatePathfindingAlgo(selectedAlgo.value);
+    }
+  };
 
   return (
     <div className="navbar">
@@ -29,32 +36,29 @@ export default function Navbar (props) {
         label="Pathfinder"
         options={pathfindingOptions}
         btnText="Visualize"
-        submitHandler={(value) => handlePathfindingSubmit(value) }
+        submitHandler={handlePathfindingSubmit}
         disabled={disabled}
       />
-      <button
-        className="btn"
-        onClick={onGenBinaryTreeMaze}
-      >
+      <button className="btn" onClick={onGenBinaryTreeMaze} disabled={disabled}>
         Binary Tree Maze
       </button>
-      <button
-        className="btn"
-        onClick={onResetGrid}
-      >
+      <button className="btn" onClick={onTogglePause} disabled={disabled}>
+        {isPaused ? "Play" : "Pause"}
+      </button>
+      <button className="btn" onClick={onResetGrid} disabled={disabled}>
         Reset
       </button>
     </div>
-  )
+  );
 }
 
 Navbar.propTypes = {
+  updatePathfindingAlgo: PropTypes.func.isRequired,
   onGenBinaryTreeMaze: PropTypes.func.isRequired,
   onResetGrid: PropTypes.func.isRequired,
+  onTogglePause: PropTypes.func.isRequired,
+  isPaused: PropTypes.bool.isRequired,
   disableAlgoButtons: PropTypes.func,
-  disabled: PropTypes.bool
-}
-
-Navbar.defaultProps = {
-  disabled: false
-}
+  toggleAlgoButtons: PropTypes.func,
+  disabled: PropTypes.bool,
+};

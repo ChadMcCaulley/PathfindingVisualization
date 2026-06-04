@@ -5,10 +5,10 @@
  */
 const getAllNodes = (grid) => {
   return grid.reduce((accu, row) => {
-    accu.push(...row)
-    return accu
-  }, [])
-}
+    accu.push(...row);
+    return accu;
+  }, []);
+};
 
 /**
  * Return the array of nodes sorted by their distance
@@ -17,7 +17,7 @@ const getAllNodes = (grid) => {
  */
 const sortNodesByDistance = (nodes) => {
   return nodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
-}
+};
 
 /**
  * Get the id of the node based on its row and col
@@ -25,8 +25,8 @@ const sortNodesByDistance = (nodes) => {
  * @return {Array}
  */
 const getNodeId = (node) => {
-  return `node-${node.row}-${node.col}`
-}
+  return `node-${node.row}-${node.col}`;
+};
 
 /**
  * Get the value of the className for the node
@@ -34,13 +34,13 @@ const getNodeId = (node) => {
  * @return {String}
  */
 const getNodeClassName = (node) => {
-  const { targetNum, isStart, isWall } = node
-  let className = ['node']
-  if (targetNum !== null) className.push('target-node')
-  else if (isStart) className.push('start-node')
-  else if (isWall) className.push('wall-node')
-  return className.join(' ')
-}
+  const { targetNum, isStart, isWall } = node;
+  let className = ["node"];
+  if (targetNum !== null) className.push("target-node");
+  else if (isStart) className.push("start-node");
+  else if (isWall) className.push("wall-node");
+  return className.join(" ");
+};
 
 /**
  * Get the start node from the grid
@@ -50,11 +50,11 @@ const getNodeClassName = (node) => {
 const getStartNode = (grid) => {
   for (const row of grid) {
     for (const node of row) {
-      if (node.isStart) return node
+      if (node.isStart) return node;
     }
   }
-  return null
-}
+  return null;
+};
 
 /**
  * Get the end node from the grid
@@ -64,11 +64,11 @@ const getStartNode = (grid) => {
 const getTargetNode = (grid) => {
   for (const row of grid) {
     for (const node of row) {
-      if (node.targetNum !== null) return node
+      if (node.targetNum !== null) return node;
     }
   }
-  return null
-}
+  return null;
+};
 
 /**
  * Get the end node from the grid
@@ -79,33 +79,33 @@ const getTargetNode = (grid) => {
 const getNodeById = (grid, id) => {
   for (const row of grid) {
     for (const node of row) {
-      if (node.id === id) return node
+      if (node.id === id) return node;
     }
   }
-  return null
-}
+  return null;
+};
 
 /**
  * Toggle whether or not a node is a wall
- * @param {Array[Array]} grid 
- * @param {Integer} row 
+ * @param {Array[Array]} grid
+ * @param {Integer} row
  * @param {Integer} col
  * @return {Array[Array]}
  */
 const toggleWallNodes = (grid, row, col) => {
-  const newGrid = grid.slice()
-  const node = newGrid[row][col]
-  const newNode = { ...node, isWall: !node.isWall }
-  newGrid[row][col] = newNode
-  return newGrid
-}
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
+  const newNode = { ...node, isWall: !node.isWall };
+  newGrid[row][col] = newNode;
+  return newGrid;
+};
 
 /**
  * Generate initial node prop values based on the row and column of the node
- * @param {Integer} col 
+ * @param {Integer} col
  * @param {Integer} row
  * @param {Boolean} isStart
- * @param {Integer} targetNum 
+ * @param {Integer} targetNum
  * @return {Object}
  */
 const createNode = (col, row, isStart = false, targetNum = null) => {
@@ -118,9 +118,9 @@ const createNode = (col, row, isStart = false, targetNum = null) => {
     distance: Infinity,
     isVisited: false,
     isWall: false,
-    previousNode: null
-  }
-}
+    previousNode: null,
+  };
+};
 
 /**
  * Set the classNamename for a given node
@@ -128,8 +128,34 @@ const createNode = (col, row, isStart = false, targetNum = null) => {
  * @param {String} className
  */
 const setNodeClass = (node, className) => {
-  document.getElementById(`node-${node.row}-${node.col}`).className = `node ${className}`
-}
+  let id = node;
+  if (typeof node === "object") id = `node-${node.row}-${node.col}`;
+  document.getElementById(id).className = `node ${className}`;
+};
+
+/**
+ * Get the valid neighbors for the current node
+ * @param {2DArray} grid
+ * @param {Object} node
+ */
+const getNeighbors = (grid, node) => {
+  const col = node.col;
+  const row = node.row;
+  const possibleNeighbors = [
+    { col, row: row - 1 }, // Up
+    { col, row: row + 1 }, // Down
+    { col: col - 1, row }, // Left
+    { col: col + 1, row }, // Right
+  ];
+
+  return possibleNeighbors
+    .map((coords) => {
+      if (!grid[coords.row] || !grid[coords.row][coords.col]) return null;
+      const neighborNode = grid[coords.row][coords.col];
+      return neighborNode && !neighborNode.isWall ? neighborNode : null;
+    })
+    .filter((val) => val !== null);
+};
 
 export {
   getAllNodes,
@@ -138,8 +164,9 @@ export {
   getNodeClassName,
   toggleWallNodes,
   createNode,
+  getNeighbors,
   getStartNode,
   getTargetNode,
   getNodeById,
-  setNodeClass
-}
+  setNodeClass,
+};
