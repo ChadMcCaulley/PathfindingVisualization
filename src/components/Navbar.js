@@ -9,7 +9,6 @@ export default function Navbar(props) {
     onTogglePause,
     isPaused,
     disableAlgoButtons,
-    toggleAlgoButtons,
     disabled,
   } = props;
 
